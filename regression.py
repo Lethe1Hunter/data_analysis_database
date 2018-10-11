@@ -30,21 +30,21 @@ def min_restore(headers, db):
 
 def prepare_data(data):
     objective = data['USER_CPU']
-    #drop objective and time
+    # drop objective and time
     features = data
     features = data.drop('USER_CPU', 1)
-    #features = data.drop('ACTIVE_SESSION_COUNT',1)
-    #features = data.drop('TIME', 1)
-
+    features = features.drop('DB_ID', 1)
+    # features = data.drop('ACTIVE_SESSION_COUNT',1)
+    # features = data.drop('TIME', 1)
     return features, objective
 
 
 def svm_regression(train_data, test_data):
-    #find max_min_value
+    # find max_min_value
     max = max_restore(train_data.columns, train_data)
     min = min_restore(train_data.columns, train_data)
-
-    #scale all data
+    # print(max, min)
+    # scale all data
     train_data = min_max_func(train_data.columns, train_data)
     test_data = min_max_func(test_data.columns, test_data)
 
@@ -52,7 +52,7 @@ def svm_regression(train_data, test_data):
     #do stuff
     X_train, y_train = prepare_data(train_data)
     X_test, y_test = prepare_data(test_data)
-    #print('bbb')
+    # print('bbb')
 
     # scale
     # train_X = min_max_func(train_X.columns, train_X)
@@ -67,7 +67,7 @@ def svm_regression(train_data, test_data):
     y_pred = clf.predict(X_test)
     print(y_pred)
     # restore predict
-    prediction = (abs(y_pred) * (max - min)) + min
+    prediction = ((y_pred + 1)/2) * (max - min) + min
     print(prediction)
 
     # calculate score

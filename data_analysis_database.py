@@ -56,9 +56,9 @@ for i in range(len(headers)):
         test_data = pd.concat([test_data, pandas_data], axis=1)
 print(type(test_data))
 '''
-data = {'EXECUTE_COUNT': ['13651'], 'SESSION_LOGICAL_READS': ['628142'],
-        'USER_CPU': ['3420.00000'], 'TOTAL_SESSIONS': '65938', 'USER_CALLS': '22022', 'CONSISTENT_GETS': '635867',
-        'PARSE_COUNT_TOTAL': '4390', 'PARSE_COUNT_HARD': '496'}
+data = {'DB_ID': ['1'], 'EXECUTE_COUNT': ['1904'], 'SESSION_LOGICAL_READS': ['93691'],
+        'USER_CPU': ['468.3333333'], 'TOTAL_SESSIONS': ['6635'], 'USER_CALLS': ['22022'], 'CONSISTENT_GETS': ['92742'],
+        'PARSE_COUNT_TOTAL': ['525'], 'PARSE_COUNT_HARD': ['46']}
 test_data = DataFrame(data)
 svm_regression(train_data, test_data)
 
