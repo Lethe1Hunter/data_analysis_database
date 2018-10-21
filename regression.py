@@ -6,6 +6,7 @@ import os.path as osp
 import seaborn as sns
 
 #scale features to the range [-1, 1]
+from sklearn.externals import joblib
 from sklearn.metrics import mean_absolute_error
 from sklearn.svm import SVR
 
@@ -14,7 +15,7 @@ def min_max_func(headers, db):
     from sklearn.preprocessing import MinMaxScaler
     min_max_scaler = MinMaxScaler(feature_range=(-1, 1))
     for i in range(0, len(headers)):
-        db[headers[i]] = min_max_scaler.fit_transform(db[headers[i]].reshape(-1, 1))
+        db[headers[i]] = min_max_scaler.fit_transform(db[headers[i]].values.reshape(-1, 1))
     return db
 
 
@@ -39,19 +40,20 @@ def prepare_data(data):
     return features, objective
 
 
-def svm_regression(train_data, test_data):
+def svm_regression(train_data):
     # find max_min_value
     max = max_restore(train_data.columns, train_data)
     min = min_restore(train_data.columns, train_data)
-    # print(max, min)
+
+    print(max, min)
     # scale all data
     train_data = min_max_func(train_data.columns, train_data)
-    test_data = min_max_func(test_data.columns, test_data)
+    #test_data = min_max_func(test_data.columns, test_data)
 
 
     #do stuff
     X_train, y_train = prepare_data(train_data)
-    X_test, y_test = prepare_data(test_data)
+    #X_test, y_test = prepare_data(test_data)
     # print('bbb')
 
     # scale
@@ -63,17 +65,21 @@ def svm_regression(train_data, test_data):
     clf = SVR(C=1.0, epsilon=0.2, kernel="linear")
 
     clf.fit(X_train, y_train)
+
+    #save model
+    joblib.dump(clf, 'svr.pkl')
     # predict
-    y_pred = clf.predict(X_test)
-    print(y_pred)
+
+    #y_pred = clf.predict(X_test)
+    #print(y_pred)
     # restore predict
-    prediction = ((y_pred + 1)/2) * (max - min) + min
-    print(prediction)
+    #prediction = ((y_pred + 1)/2) * (max - min) + min
+    #print(prediction)
 
     # calculate score
-    print('MAE: {}'.format(mean_absolute_error(y_test, y_pred)))
+    #print('MAE: {}'.format(mean_absolute_error(y_test, y_pred)))
     #draw_pred(y_test, y_pred, X_test)
-    draw_features_importance(clf, X_test)
+    #draw_features_importance(clf, X_test)
 
 
 def draw_pred(y_true, y_pred, X_test):
